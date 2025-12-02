@@ -113,3 +113,5 @@ I’m continuing to work on the metrics analysis. The current plan is to include
 - **Average utilization boost**: This measures how much more workload Prism can handle compared to the baseline for the same hardware budget. For example, if Prism can serve 4 models using the same hardware where the baseline can only serve 2, then the utilization boost is the ratio of Prism’s total token throughput to the baseline’s.
 
 - **Cost savings**: This shows how much fewer GPUs Prism requires to serve the same number of models. It can be calculated as: `cost savings = (GPUs required by Prism) / (GPUs required by the baseline)`.
+
+Please let me know if you have any suggestions or feedback on the metrics.
