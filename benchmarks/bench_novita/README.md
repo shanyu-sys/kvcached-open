@@ -106,11 +106,6 @@ All the results will be saved in the `logs` directory, including the server logs
 
 ### Metrics
 
-I am still working on the metrics analysis. I plan to include the following metrics:
-- Revenue over time plot. The revenue is calculated as the token throughput multiplied by the price per token, and aggregated over all the model instances.
-- Average utilization boost. Given the same amount of hardware resource, say prism can serve 4 models, and the baseline can serve 2 models, the average utilization boost is the aggregated token throughput of Prism compared to the baseline.
-- Cost savings. Cost savings can be calculated as, given the same amount of models to be served, (total number of GPUs used by Prism) / (total number of GPUs used by baseline)
-
 I’m continuing to work on the metrics analysis. The current plan is to include the following metrics:
 
 - **Revenue over time**: A plot showing how revenue changes over time. Revenue is computed as `token throughput × price per token of the model`, aggregated across all model instances. Compare the revenue of Prism and the baseline.
