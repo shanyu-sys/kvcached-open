@@ -5,7 +5,6 @@ This directory contains the benchmark scripts for the Multi-LLM serving
 ## Install kvcached
 
 Please refer to the [kvcached README](../../README.md) for more detailed installation instructions.
-```
 
 You can run the entire benchmark using the kvcached SGLang docker image.
 
@@ -26,7 +25,7 @@ cd kvcached-open/benchmarks/multi-llm-testing
 
 Adjust the configuration in the `config_prism_gpu_{i}.yml` or `config_baseline_8_gpu` file if needed. 
 For example, 
-* Run shorter trace duration by adjusting the end timestamp (e.g. with start timestamp "2025-08-07 00:00:00.000000" and end timestamp "2025-08-07 00:05:00.000000" will send requests in the first 5 minutes). Default trace is 1 day.
+* Run shorter trace duration by adjusting the end timestamp (e.g. with start timestamp "2025-08-07 00:00:00.000000" and end timestamp "2025-08-07 00:05:00.000000" will send requests in the first 5 minutes). For your test run, please make sure to change the end timestamp to a shorter duration (e.g. "2025-08-07 00:05:00.000000") in all the configration yaml files. Default trace duration is 1 day.
 * Adjust the gpu_id if it is occupied by other processes.
 * Adjust the port if it is occupied by other processes. Should make sure that all the ports are different (in all config files if run on multiple gpus).
 
