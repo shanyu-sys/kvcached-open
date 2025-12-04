@@ -4,6 +4,7 @@
 benchmark:
   start_timestamp: "2025-08-07 00:00:00.000000" # start timestamp of the trace, this will be ignored
   end_timestamp: "2025-08-08 01:00:00.000000" # end timestamp of the trace
+  duration: "1h" # duration from start_timestamp (e.g., "30s", "10m", "1h", "1.5h"). If specified, overrides end_timestamp.
   slowdown_factor: 1 # a value of 0.1 means the replay is 10 times faster.
   torch_master_addr: "localhost" # master address for torch distributed communication
   torch_master_port: "29500" # default port for torch distributed communication
@@ -17,7 +18,7 @@ instances:
     port: 30031
     trace_file: null
     trace_model_filter: "Qwen3-0.6B_20250607"
-    model_path: null  # Set to null to use model_name, or specify a local path to use offline models.
+    model_path: null
 
   - name: "Llama-3.2-1B"
     model_name: "meta-llama/Llama-3.2-1B"
@@ -45,7 +46,7 @@ instances:
     port: 30035
     trace_file: null
     trace_model_filter: "Qwen3-4B_20250529"
-    model_path: null  # Set to null to use model_name, or specify a local path to use offline models.
+    model_path: null
 
   - name: "Mistral-7B-Instruct-v0.2"
     model_name: "mistralai/Mistral-7B-Instruct-v0.2"
@@ -67,5 +68,3 @@ instances:
     trace_file: null
     trace_model_filter: "Mistral-Nemo-Instruct-2407_preview"
     model_path: null
-
-

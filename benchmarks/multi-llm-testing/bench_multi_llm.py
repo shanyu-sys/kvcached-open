@@ -6,10 +6,11 @@
 
 import argparse
 import os
+import re
 import subprocess
 import time
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -32,10 +33,88 @@ class Instance:
     gpu_id: Optional[int] = None
 
 
+def parse_duration(duration_str: str) -> timedelta:
+    """
+    Parse a duration string into a timedelta object.
+    
+    Supported formats:
+        - "30s" or "30sec" -> 30 seconds
+        - "10m" or "10min" -> 10 minutes
+        - "1h" or "1hour" -> 1 hour
+        - "1.5h" -> 1.5 hours
+        - "90" -> 90 seconds (default unit is seconds)
+    
+    Args:
+        duration_str: Duration string to parse
+        
+    Returns:
+        timedelta object representing the duration
+        
+    Raises:
+        ValueError: If the duration string format is invalid
+    """
+    duration_str = duration_str.strip().lower()
+    
+    # Pattern to match number (int or float) followed by optional unit
+    pattern = r'^(\d+(?:\.\d+)?)\s*(s|sec|seconds?|m|min|minutes?|h|hr|hours?)?$'
+    match = re.match(pattern, duration_str)
+    
+    if not match:
+        raise ValueError(f"Invalid duration format: '{duration_str}'. "
+                        f"Expected formats: '30s', '10m', '1h', '1.5h', or just a number (seconds)")
+    
+    value = float(match.group(1))
+    unit = match.group(2) or 's'  # Default to seconds
+    
+    if unit in ('s', 'sec', 'second', 'seconds'):
+        return timedelta(seconds=value)
+    elif unit in ('m', 'min', 'minute', 'minutes'):
+        return timedelta(minutes=value)
+    elif unit in ('h', 'hr', 'hour', 'hours'):
+        return timedelta(hours=value)
+    else:
+        return timedelta(seconds=value)
+
+
+def resolve_end_timestamp(benchmark_config: dict) -> None:
+    """
+    Resolve end_timestamp from duration if specified.
+    
+    If 'duration' is specified in benchmark_config, calculate end_timestamp
+    as start_timestamp + duration. Modifies benchmark_config in place.
+    
+    Args:
+        benchmark_config: Benchmark configuration dictionary
+    """
+    if 'duration' in benchmark_config and benchmark_config['duration']:
+        start_str = benchmark_config['start_timestamp']
+        start_dt = datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S.%f')
+        
+        duration = parse_duration(str(benchmark_config['duration']))
+        end_dt = start_dt + duration
+        
+        benchmark_config['end_timestamp'] = end_dt.strftime('%Y-%m-%d %H:%M:%S.%f')
+        print(f"Duration '{benchmark_config['duration']}' resolved to end_timestamp: {benchmark_config['end_timestamp']}")
+
+
 def load_config(config_path: str = "config.yml") -> dict:
-    """Load instance configurations from YAML file."""
+    """
+    Load instance configurations from YAML file.
+    
+    Args:
+        config_path: Path to the config file
+                         
+    Returns:
+        Configuration dictionary
+    """
     with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
+        config = yaml.safe_load(f)
+    
+    # Resolve duration to end_timestamp if needed
+    if 'benchmark' in config:
+        resolve_end_timestamp(config['benchmark'])
+    
+    return config
 
 
 def create_log_directories(log_dir: Path) -> tuple[Path, Path]:

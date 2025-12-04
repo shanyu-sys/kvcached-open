@@ -3,7 +3,8 @@
 # Benchmark settings
 benchmark:
   start_timestamp: "2025-08-07 00:00:00.000000" # start timestamp of the trace, this will be ignored
-  end_timestamp: "2025-08-08 01:00:00.000000" # end timestamp of the trace
+  end_timestamp: "2025-08-08 00:00:20.000000" # end timestamp of the trace
+  duration: "5m" # duration from start_timestamp (e.g., "30s", "10m", "1h", "1.5h"). If specified, overrides end_timestamp.
   slowdown_factor: 1 # a value of 0.1 means the replay is 10 times faster.
   torch_master_addr: "localhost" # master address for torch distributed communication
   torch_master_port: "29500" # default port for torch distributed communication
@@ -40,32 +41,30 @@ instances:
     trace_model_filter: "Llama-3.2-3B_latest"
     model_path: null
 
-  # - name: "Qwen3-4B"
-  #   model_name: "Qwen/Qwen3-4B"
-  #   port: 30005
-  #   trace_file: null
-  #   trace_model_filter: "Qwen3-4B_0814"
-  #   model_path: null  # Set to null to use model_name, or specify a local path to use offline models.
+  - name: "Qwen3-4B"
+    model_name: "Qwen/Qwen3-4B"
+    port: 30005
+    trace_file: null
+    trace_model_filter: "Qwen3-4B_0814"
+    model_path: null
 
-  # - name: "Mistral-7B-Instruct-v0.2"
-  #   model_name: "mistralai/Mistral-7B-Instruct-v0.2"
-  #   port: 30006
-  #   trace_file: null
-  #   trace_model_filter: "Mistral-7B-Instruct-v0.2_0814"
-  #   model_path: null
+  - name: "Mistral-7B-Instruct-v0.2"
+    model_name: "mistralai/Mistral-7B-Instruct-v0.2"
+    port: 30006
+    trace_file: null
+    trace_model_filter: "Mistral-7B-Instruct-v0.2_0814"
+    model_path: null
 
-  # - name: "Llama-3.1-8B-Instruct"
-  #   model_name: "meta-llama/Llama-3.1-8B-Instruct"
-  #   port: 30007
-  #   trace_file: null
-  #   trace_model_filter: "Llama-3.1-8B-Instruct_1024"
-  #   model_path: null
+  - name: "Llama-3.1-8B-Instruct"
+    model_name: "meta-llama/Llama-3.1-8B-Instruct"
+    port: 30007
+    trace_file: null
+    trace_model_filter: "Llama-3.1-8B-Instruct_1024"
+    model_path: null
 
-  # - name: "Mistral-Nemo-Instruct-2407"
-  #   model_name: "mistralai/Mistral-Nemo-Instruct-2407"
-  #   port: 30008
-  #   trace_file: null
-  #   trace_model_filter: "Mistral-Nemo-Instruct-2407_20251022"
-  #   model_path: null
-
-
+  - name: "Mistral-Nemo-Instruct-2407"
+    model_name: "mistralai/Mistral-Nemo-Instruct-2407"
+    port: 30008
+    trace_file: null
+    trace_model_filter: "Mistral-Nemo-Instruct-2407_20251022"
+    model_path: null

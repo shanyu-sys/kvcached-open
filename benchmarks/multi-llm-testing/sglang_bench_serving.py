@@ -1054,7 +1054,7 @@ async def get_battle_request_over_time(
     """
     if not input_requests:
         raise ValueError(
-            "No Novita input requests were found within the specified time range. "
+            "No input requests were found within the specified time range. Please use a larger time window."
             "Please verify that your chosen time window contains requests for benchmarking."
         )
 
