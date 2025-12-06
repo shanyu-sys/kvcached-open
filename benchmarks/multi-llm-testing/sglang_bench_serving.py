@@ -731,18 +731,23 @@ def get_dataset(args, tokenizer):
         input_requests = all_requests_data[: args.num_prompts]
 
     elif args.dataset_name == "battle":
-        print("Loading battle dataset from {args.dataset_path}")
-        local_path = args.dataset_path
+        # get working directory
+        working_dir = os.path.dirname(os.path.abspath(__file__))
+        print(f"Working directory: {working_dir}")
 
-        if not args.dataset_path:
-            local_path = os.path.join("/tmp", "clean_battle_1d.csv")
-        else:
-            local_path = args.dataset_path
+        local_path = os.path.join(working_dir, "trace/clean_battle_1d.csv")
+        print("Loading battle dataset from {local_path}")
+        # local_path = args.dataset_path
 
-        if not os.path.exists(local_path):
-            download_and_cache_file(
-                "https://drive.usercontent.google.com/u/0/uc?id=1nJYe9rwYazZV0dy99Wt_oIwWgKKnRzUw&export=download", local_path
-            )
+        # if not args.dataset_path:
+        #     local_path = os.path.join("/tmp", "clean_battle_1d.csv")
+        # else:
+        #     local_path = args.dataset_path
+
+        # if not os.path.exists(local_path):
+        #     download_and_cache_file(
+        #         "https://drive.usercontent.google.com/u/0/uc?id=1nJYe9rwYazZV0dy99Wt_oIwWgKKnRzUw&export=download", local_path
+        #     )
         model_name_filter = args.trace_model_filter
         df = read_csv(local_path)
         df = df[df['model_name'] == model_name_filter]

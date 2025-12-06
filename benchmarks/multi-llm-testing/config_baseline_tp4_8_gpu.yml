@@ -1,0 +1,33 @@
+# Multi-LLM Benchmark Configuration
+
+# Benchmark settings
+benchmark:
+  start_timestamp: "2025-08-07 00:00:00.000000" # start timestamp of the trace, this will be ignored
+  end_timestamp: "2025-08-08 01:00:00.000000" # end timestamp of the trace
+  duration: "10m" # duration from start_timestamp (e.g., "30s", "10m", "1h", "1.5h"). If specified, overrides end_timestamp.
+  slowdown_factor: 1 # a value of 0.1 means the replay is 10 times faster.
+  torch_master_addr: "localhost" # master address for torch distributed communication
+  torch_master_port: "29500" # default port for torch distributed communication
+  status_interval: 60 # benchmark status update interval in seconds
+
+# Instance configurations
+instances:
+
+  - name: "Meta-Llama-3-70B-1"
+    model_name: "meta-llama/Meta-Llama-3-70B"
+    port: 30101
+    trace_file: null
+    trace_model_filter: "Llama-3.1-70B-Instruct_latest"
+    model_path: null
+    tp: 4
+    gpu_id: 0
+
+  - name: "Qwen3-32B-2"
+    model_name: "Qwen/Qwen3-32B"
+    port: 30102
+    trace_file: null
+    trace_model_filter: "Qwen3-32B_20251022"
+    model_path: null
+    tp: 4
+    gpu_id: 4
+

@@ -33,7 +33,7 @@ For example,
 ### Run the benchmark
 
 
-#### Prism test
+#### Prism test (TP=1)
 
 Run prism test on gpu 0
 ```bash
@@ -58,7 +58,7 @@ python bench_multi_llm.py --config config_prism_gpu_3.yml
 All server and benchmark logs will be saved in the `logs/config_prism_gpu_{i}` directory. Each run will generate a new directory with the timestamp.
 
 
-#### Baseline test
+#### Baseline test (TP=1)
 
 Run baseline test on 0-7 gpus
 ```bash
@@ -66,3 +66,18 @@ python bench_multi_llm.py --config config_baseline_8_gpu.yml
 ```
 
 All server and benchmark logs will be saved in the `logs/config_baseline_8_gpu` directory.
+
+
+### Prism test (TP=4)
+
+Run prism test on gpu 0
+```bash
+python bench_multi_llm.py --config config_prism_tp4_gpu_0.yml
+```
+
+### Baseline test (TP=4)
+
+Run baseline test on gpu 0
+```bash
+python bench_multi_llm.py --config config_baseline_tp4_8_gpu.yml
+```

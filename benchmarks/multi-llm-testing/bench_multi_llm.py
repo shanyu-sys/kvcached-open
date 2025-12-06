@@ -31,6 +31,7 @@ class Instance:
     trace_model_filter: Optional[str] = None
     model_path: Optional[str] = None
     gpu_id: Optional[int] = None
+    tp: Optional[int] = None  # Tensor parallelism size
 
 
 def parse_duration(duration_str: str) -> timedelta:
@@ -148,15 +149,31 @@ def launch_servers(
         log_file = log_dir / f"server_{instance.name}_port{instance.port}.log"
         log_files.append(log_file)
 
+        # Determine GPU ID
         base_gpu_id = 0
         if "gpu_id" in config["benchmark"]:
-            gpu_id = config["benchmark"]["gpu_id"]
+            base_gpu_id = config["benchmark"]["gpu_id"]
         elif instance.gpu_id is not None:
-            gpu_id = instance.gpu_id
+            base_gpu_id = instance.gpu_id
+        
+        # Determine TP size (default to 1 if not specified)
+        if "tp" in config["benchmark"]:
+            tp_size = config["benchmark"]["tp"]
+        elif instance.tp is not None:
+            tp_size = instance.tp
+        else:
+            tp_size = 1
+        
+        # Set CUDA_VISIBLE_DEVICES: for TP > 1, we need multiple GPUs
+        if tp_size > 1:
+            gpu_list = [str(base_gpu_id + i) for i in range(tp_size)]
+            cuda_visible_devices = ",".join(gpu_list)
+        else:
+            cuda_visible_devices = str(base_gpu_id)
         
         env = os.environ.copy()
         env.update({
-            "CUDA_VISIBLE_DEVICES": str(gpu_id),
+            "CUDA_VISIBLE_DEVICES": cuda_visible_devices,
         })
 
         # Build command
@@ -167,9 +184,15 @@ def launch_servers(
             "--disable-radix-cache",
             "--disable-cuda-graph",
         ]
+        
+        # Add TP flag if TP > 1
+        if tp_size > 1:
+            cmd.extend(["--tp", str(tp_size)])
 
         print(f"  Launching server for {instance.name}")
         print(f"   Port: {instance.port}")
+        print(f"   TP: {tp_size}")
+        print(f"   GPUs: {cuda_visible_devices}")
         print(f"   Log: {log_file}")
 
         # Launch process
@@ -404,13 +427,15 @@ def main():
     if number_of_gpus > 0:
         print(f"Run benchmark on {number_of_gpus} GPUs")
         gpu_str = f"gpu_{gpu_ids[0]}-{gpu_ids[-1]}"
+    
+    tp_size = config['benchmark']['tp'] if 'tp' in config['benchmark'] else 1
 
     # Create log directories
     log_base = Path("./logs")
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     config_name = args.config.split("/")[-1].split(".")[0]
     
-    log_dir = log_base / config_name / f"run_{gpu_str}_{len(instances)}_llms_{timestamp}_trace_{original_duration_str}_actual_{actual_trace_time_str}"
+    log_dir = log_base / config_name / f"run_tp_{tp_size}_{gpu_str}_{len(instances)}_llms_{timestamp}_trace_{original_duration_str}_actual_{actual_trace_time_str}"
     server_log_dir, benchmark_log_dir = create_log_directories(log_dir)
 
     # Initialize process manager
